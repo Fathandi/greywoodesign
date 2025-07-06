@@ -13,7 +13,7 @@
 </head>
 
 <body>
-  <?php include "navbar.html"; ?>
+  <div id="navbar-placeholder"></div>
 
   <main class="content">
     <!-- Hero Section -->
@@ -160,8 +160,21 @@
     </section>
   </main>
 
-  <?php include "footer.html"; ?>
 
+  <div id="footer-placeholder"></div>
+
+  <script>
+    fetch('navbar.html')
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('navbar-placeholder').innerHTML = data;
+      });
+    fetch('footer.html')
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('footer-placeholder').innerHTML = data;
+      });
+  </script>
   <script src="./script.js"></script>
   <script src="./script/navbar.js"></script>
   <script src="./script/auth.js" defer></script>
