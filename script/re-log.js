@@ -454,7 +454,7 @@ async function handleSignIn(e) {
         allowOutsideClick: true,
       });
       setTimeout(() => {
-        window.location.href = "../index.php";
+        window.location.href = "../";
       }, 2000);
     }
   } catch (error) {

@@ -47,7 +47,7 @@ function initializeProfilePage() {
   if (!user || !token) {
     showAlert("warning", "Silakan login terlebih dahulu");
     setTimeout(() => {
-      window.location.href = "../index.php";
+      window.location.href = "../";
     }, 2000);
     return;
   }
@@ -77,7 +77,7 @@ function logout() {
   localStorage.removeItem("user");
   showAlert("info", "Anda telah logout");
   setTimeout(() => {
-    window.location.href = "../index.php";
+    window.location.href = "../";
   }, 1500);
 }
 
@@ -85,7 +85,7 @@ function logout() {
  * Redirect ke halaman utama
  */
 function redirectToHome() {
-  window.location.href = "../index.php";
+  window.location.href = "../";
 }
 
 // =======================================================
