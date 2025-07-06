@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interior Living Room Custom Design</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../style/navbar.css">
+    <link rel="stylesheet" href="../style/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <?php include "../navbar.html"; ?>
+
+    <main class="content">
+        <section class="about-section secondary">
+            <div class="container">
+                <h2>First Meeting Starts in a Meaningful Living Room</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <p>The interior design of this living room was designed to bring a modern, spacious and cozy feel to the space.</p>
+                        <p>By combining open architectural elements, natural lighting from large windows, and elegant custom furniture, this room becomes the center of family interaction as well as a representative area for entertaining guests.</p>
+                        <p>The focus on color harmony, soft textures, and functional layout make it perfect for the modern urban lifestyle.</p>
+                    </div>
+                    <div class="about-image">
+                        <img src="../assets/second-product-/second-product-result.png" alt="Modern house design">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="about-section">
+            <div class="container">
+                <h2>Stucture Architecture</h2>
+                <div class="about-content">
+                    <div class="about-image">
+                        <img src="../assets/second-product-/second-product-blueprint.png" alt="Modern house design">
+                    </div>
+                    <div class="about-text">
+                        <p>The 4x6-meter room uses 60x60 cm polished granite flooring, warm ash doff paint finish walls, wood motif PVC suspended ceiling with LED ambient.</p>
+                        <p>Synthetic leather custom L sofa, natural finish teak wood coffee table, MDF built-in TV shelf, and soft fur carpet. The 1.8x2.2m tempered glass window maximizes natural lighting.</p>
+                        <p>Air circulation is supported by a hidden exhaust fan and an open space layout with lightweight partitions.</p>
+                    </div>
+                </div>
+                <button class="cta-button secondary-button" onclick="redirectToHome()">Kembali</button>
+            </div>
+        </section>
+    </main>
+
+    <?php include "../footer.html"; ?>
+
+    <script src="../script/navbar.js"></script>
+    <script src="../script/auth.js"></script>
+    <script>
+        function redirectToHome() {
+            window.location.href = "../index.php";
+        }
+    </script>
+</body>
+
+</html>

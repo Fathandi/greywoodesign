@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Furniture & Furnishing</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../style/navbar.css">
+    <link rel="stylesheet" href="../style/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <?php include "../navbar.html"; ?>
+
+    <main class="content">
+        <section class="about-section secondary">
+            <div class="container">
+                <h2>Custom Interior Furnishing for Modern Minimalist Style Home</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <p>This project is part of PT Greywoods Design's Custom Furniture & Furnishing service for a renovated house in a modern minimalist style. The clients are a young couple who wanted a neat, efficient and aesthetic home without sacrificing the functionality of the space.</p>
+                        <p>The solution focused on creating custom furniture that was fully adapted to the layout, lifestyle, and specific needs of the occupants.</p>
+                        <p>This project not only improves the comfort and appearance of the house, but also adds functional value in every corner of the room with a harmonious and precise design touch.</p>
+                    </div>
+                    <div class="about-image">
+                        <img src="../assets/fourth-product-/fourth-product-result.png" alt="Modern house design">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="about-section">
+            <div class="container">
+                <h2>Stucture Architecture</h2>
+                <div class="about-content">
+                    <div class="about-image">
+                        <img src="../assets/fourth-product-/fourth-product-blueprint.png" alt="Modern house design">
+                    </div>
+                    <div class="about-text">
+                        <p>The project involved several key products: an L-shape kitchen set with moisture-proof HPL multiplex material and soft-close system, a master bedroom built-in wardrobe with glass and wood sliding doors, an ash wood-patterned floating TV panel with hidden cable rack, and an ergonomic work desk with cable tray and USB port.</p>
+                        <p>All units were built based on the actual size of the room with 2D digital blueprint mapping and 3D visualization to ensure precise design integration.</p>
+                        <p>Finishes, colors and materials were chosen in line with the client's interior theme: minimalist, bright and clean. Each unit has gone through a design revision stage until the client is 100% satisfied before the production process.</p>
+                    </div>
+                </div>
+                <button class="cta-button secondary-button" onclick="redirectToHome()">Kembali</button>
+            </div>
+        </section>
+    </main>
+
+    <?php include "../footer.html"; ?>
+
+    <script src="../script/navbar.js"></script>
+    <script src="../script/auth.js"></script>
+    <script>
+        function redirectToHome() {
+            window.location.href = "../index.php";
+        }
+    </script>
+</body>
+
+</html>
