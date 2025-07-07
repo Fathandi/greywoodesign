@@ -1,6 +1,6 @@
 const host =
   location.hostname === "127.0.0.1" ? "localhost" : location.hostname;
-const API_BASE_URL = `http://${host}:4000/api`;
+const API_BASE_URL = `https://api.${host}/api`;
 
 
 window.addEventListener("error", (e) => {
