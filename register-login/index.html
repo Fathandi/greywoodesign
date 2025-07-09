@@ -1,101 +1,152 @@
 <!DOCTYPE html>
 <html lang="id">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Authentication Pages</title>
-    <link rel="stylesheet" href="../style/re-log.css">
-    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../style/re-log.css" />
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="container">
-        <!-- Left Form Section -->
-        <div class="form-section">
-            <!-- Sign Up Page -->
-            <div id="signup" class="page active">
-                <h1>Create Account</h1>
-                <form id="signupForm">
-                    <div class="form-group">
-                        <label for="signup-username">Username</label>
-                        <input type="text" id="signup-username" name="username" required>
-                        <div class="error" id="username-error"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="signup-email">Email</label>
-                        <input type="email" id="signup-email" name="email" required>
-                        <div class="error" id="email-error"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="signup-password">Password</label>
-                        <input type="password" id="signup-password" name="password" required>
-                        <div class="error" id="password-error"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="confirm-password">Konfirmasi Password</label>
-                        <input type="password" id="confirm-password" name="confirmPassword" required>
-                        <div class="error" id="confirm-password-error"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="verification-code">Kode OTP</label>
-                        <div class="verification-group">
-                            <input type="text" id="verification-code" name="verificationCode" placeholder="Masukkan kode verifikasi" disabled>
-                            <button type="button" class="verification-btn" id="verificationBtn">Kirim OTP</button>
-                        </div>
-                        <div class="success" id="verification-success"></div>
-                        <div class="error" id="verification-error"></div>
-                    </div>
-
-                    <button type="submit" id="submitBtn" disabled>Daftar Sekarang</button>
-                </form>
-
-                <div class="switch-link">
-                    Sudah punya akun? <a onclick="switchToSignIn()">Masuk di sini</a>
-                </div>
+      <!-- Left Form Section -->
+      <div class="form-section">
+        <!-- Sign Up Page -->
+        <div id="signup" class="page active">
+          <h1>Create Account</h1>
+          <form id="signupForm">
+            <div class="form-group">
+              <label for="signup-username">Username</label>
+              <input
+                type="text"
+                id="signup-username"
+                name="username"
+                required
+              />
+              <div class="error" id="username-error"></div>
             </div>
 
-            <!-- Sign In Page -->
-            <div id="signin" class="page">
-                <h1>Wellcome</h1>
-                <form id="signinForm">
-                    <div class="form-group">
-                        <label for="signin-username">Username</label>
-                        <input type="text" id="signin-username" name="username" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="signin-password">Password</label>
-                        <input type="password" id="signin-password" name="password" required>
-                    </div>
-
-                    <button type="submit">Masuk</button>
-                </form>
-
-                <div class="switch-link">
-                    Belum punya akun? <a onclick="switchToSignUp()">Daftar di sini</a>
-                </div>
+            <div class="form-group">
+              <label for="signup-email">Email</label>
+              <input type="email" id="signup-email" name="email" required />
+              <div class="error" id="email-error"></div>
             </div>
+
+            <div class="form-group">
+              <label for="signup-phone">Nomor Telepon</label>
+              <input
+                type="tel"
+                id="signup-phone"
+                name="phone"
+                required
+                pattern="[0-9]{10,15}"
+                title="10-15 digit angka (contoh: 081234567890)"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+              />
+              <div class="error" id="phone-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="signup-password">Password</label>
+              <input
+                type="password"
+                id="signup-password"
+                name="password"
+                required
+              />
+              <div class="error" id="password-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="confirm-password">Konfirmasi Password</label>
+              <input
+                type="password"
+                id="confirm-password"
+                name="confirmPassword"
+                required
+              />
+              <div class="error" id="confirm-password-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="verification-code">Kode OTP</label>
+              <div class="verification-group">
+                <input
+                  type="text"
+                  id="verification-code"
+                  name="verificationCode"
+                  placeholder="Masukkan kode verifikasi"
+                  disabled
+                />
+                <button
+                  type="button"
+                  class="verification-btn"
+                  id="verificationBtn"
+                >
+                  Kirim OTP
+                </button>
+              </div>
+              <div class="success" id="verification-success"></div>
+              <div class="error" id="verification-error"></div>
+            </div>
+
+            <button type="submit" id="submitBtn" disabled>
+              Daftar Sekarang
+            </button>
+          </form>
+
+          <div class="switch-link">
+            Sudah punya akun? <a onclick="switchToSignIn()">Masuk di sini</a>
+          </div>
         </div>
 
-        <!-- Right Illustration Section -->
-        <div class="illustration-section">
-            <div class="floating-shape"></div>
-            <div class="floating-shape"></div>
-            <div class="floating-shape"></div>
-
-            <div class="illustration-content">
-                <h2>PT. Greywoods Design</h2>
-                <p>Join us for a creative journey. Let's bring your ideas to life.</p>
+        <!-- Sign In Page -->
+        <div id="signin" class="page">
+          <h1>Wellcome</h1>
+          <form id="signinForm">
+            <div class="form-group">
+              <label for="signin-username">Username</label>
+              <input
+                type="text"
+                id="signin-username"
+                name="username"
+                required
+              />
             </div>
+
+            <div class="form-group">
+              <label for="signin-password">Password</label>
+              <input
+                type="password"
+                id="signin-password"
+                name="password"
+                required
+              />
+            </div>
+
+            <button type="submit">Masuk</button>
+          </form>
+
+          <div class="switch-link">
+            Belum punya akun? <a onclick="switchToSignUp()">Daftar di sini</a>
+          </div>
         </div>
+      </div>
+
+      <!-- Right Illustration Section -->
+      <div class="illustration-section">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+
+        <div class="illustration-content">
+          <h2>PT. Greywoods Design</h2>
+          <p>Join us for a creative journey. Let's bring your ideas to life.</p>
+        </div>
+      </div>
     </div>
     <script src="../script/re-log.js"></script>
-</body>
-
+  </body>
 </html>

@@ -2,7 +2,6 @@ const host =
   location.hostname === "127.0.0.1" ? "localhost" : location.hostname;
 const API_BASE_URL = `https://api.${host}/api`;
 
-
 window.addEventListener("error", (e) => {
   console.error(
     `Script error at ${e.filename}:${e.lineno}:${e.colno}`,
@@ -55,6 +54,9 @@ function setupEventListeners() {
   document
     .getElementById("signup-password")
     .addEventListener("input", validatePassword);
+  document
+    .getElementById("signup-phone")
+    .addEventListener("blur", validatePhone);
 
   // Network status
   window.addEventListener("online", handleOnlineStatus);
@@ -64,6 +66,7 @@ function setupEventListeners() {
 function validateFormRealTime() {
   const username = document.getElementById("signup-username").value.trim();
   const email = document.getElementById("signup-email").value.trim();
+  const phone = document.getElementById("signup-phone").value.trim();
   const password = document.getElementById("signup-password").value;
   const confirmPassword = document.getElementById("confirm-password").value;
   const button = document.getElementById("verificationBtn");
@@ -72,6 +75,7 @@ function validateFormRealTime() {
 
   if (!username || username.length < 3) isValid = false;
   if (!email || !isValidEmail(email)) isValid = false;
+  if (!phone || !isValidPhone(phone)) isValid = false;
   if (!password || password.length < 6) isValid = false;
   if (!confirmPassword || password !== confirmPassword) isValid = false;
 
@@ -190,24 +194,39 @@ function hideMessage(elementId) {
 
 // Verification handler
 async function handleVerification() {
+  // Get all form values
   const email = document.getElementById("signup-email").value.trim();
+  const phoneInput = document.getElementById("signup-phone");
+  const phone = phoneInput.value.replace(/\D/g, ''); // Remove all non-digit characters
+  phoneInput.value = phone; // Update the input with cleaned value
   const username = document.getElementById("signup-username").value.trim();
   const password = document.getElementById("signup-password").value;
   const confirmPassword = document.getElementById("confirm-password").value;
   const button = document.getElementById("verificationBtn");
   const originalText = button.textContent;
 
+  // Debug: Log all values before validation
+  console.log("Form values:", {
+    email,
+    phone,
+    username,
+    password,
+    confirmPassword
+  });
+
   // Clear previous messages
   hideError("verification-error");
   hideMessage("verification-success");
   hideError("username-error");
   hideError("email-error");
+  hideError("phone-error");
   hideError("password-error");
   hideError("confirm-password-error");
 
   // Validate ALL fields
   let isValid = true;
 
+  // Username validation
   if (!username) {
     showError("username-error", "Username is required");
     isValid = false;
@@ -216,6 +235,7 @@ async function handleVerification() {
     isValid = false;
   }
 
+  // Email validation
   if (!email) {
     showError("email-error", "Email is required");
     isValid = false;
@@ -224,6 +244,16 @@ async function handleVerification() {
     isValid = false;
   }
 
+  // Phone validation
+  if (!phone) {
+    showError("phone-error", "Nomor telepon diperlukan");
+    isValid = false;
+  } else if (!isValidPhone(phone)) {
+    showError("phone-error", "Format tidak valid (10-15 digit angka)");
+    isValid = false;
+  }
+
+  // Password validation
   if (!password) {
     showError("password-error", "Password is required");
     isValid = false;
@@ -232,6 +262,7 @@ async function handleVerification() {
     isValid = false;
   }
 
+  // Confirm password validation
   if (!confirmPassword) {
     showError("confirm-password-error", "Please confirm your password");
     isValid = false;
@@ -240,14 +271,24 @@ async function handleVerification() {
     isValid = false;
   }
 
-  if (!isValid) return; // Stop jika validasi gagal
+  if (!isValid) {
+    console.log("Validation failed, aborting...");
+    return; // Stop if validation fails
+  }
 
+  // Start loading state
   setLoadingState(button, true);
 
   try {
+    console.log("Sending OTP request with:", { email, username, phone });
+    
     const response = await apiRequest("/send-otp", {
       method: "POST",
-      body: JSON.stringify({ email, username }),
+      body: JSON.stringify({ 
+        email, 
+        username,
+        phone // Make sure phone is included
+      }),
     });
 
     if (response.success) {
@@ -264,7 +305,7 @@ async function handleVerification() {
       // Success message
       showSuccess("verification-success", `Verification code sent to ${email}`);
 
-      // Optional: Show alert in development mode
+      // Optional: Show alert
       Swal.fire({
         title: "OTP Terkirim",
         text: `Kode verifikasi untuk ${username} telah dikirim ke ${email}`,
@@ -277,13 +318,30 @@ async function handleVerification() {
       });
     }
   } catch (error) {
-    showError(
-      "verification-error",
-      error.message || "Failed to send verification"
-    );
+    console.error("Verification error:", error);
+    
+    // Handle specific phone-related errors
+    if (error.message.toLowerCase().includes("phone")) {
+      showError("phone-error", error.message);
+    } else {
+      showError(
+        "verification-error",
+        error.message || "Failed to send verification"
+      );
+    }
   } finally {
     setLoadingState(button, false, originalText);
   }
+}
+
+// Phone validation helper (add this if not already present)
+function isValidPhone(phone) {
+  const phoneRegex = /^[0-9]{10,15}$/;
+  if (!phoneRegex.test(phone)) {
+    console.log(`Phone validation failed for: ${phone}`);
+    return false;
+  }
+  return true;
 }
 
 // Sign up handler
@@ -292,6 +350,7 @@ async function handleSignUp(e) {
 
   const username = document.getElementById("signup-username").value.trim();
   const email = document.getElementById("signup-email").value.trim();
+  const phone = document.getElementById("signup-phone").value.trim();
   const password = document.getElementById("signup-password").value;
   const confirmPassword = document.getElementById("confirm-password").value;
   const verificationCode = document
@@ -299,11 +358,27 @@ async function handleSignUp(e) {
     .value.trim();
   const submitBtn = document.getElementById("submitBtn");
 
+  console.log({
+    username,
+    email,
+    phone,
+    password,
+    confirmPassword,
+    verificationCode,
+  });
+
   clearMessages();
 
   // Validate form
   if (
-    !validateForm(username, email, password, confirmPassword, verificationCode)
+    !validateForm(
+      username,
+      email,
+      phone,
+      password,
+      confirmPassword,
+      verificationCode
+    )
   )
     return;
 
@@ -315,6 +390,7 @@ async function handleSignUp(e) {
       body: JSON.stringify({
         username,
         email,
+        phone,
         password,
         confirmPassword,
         verificationCode,
@@ -350,6 +426,7 @@ async function handleSignUp(e) {
 function validateForm(
   username,
   email,
+  phone,
   password,
   confirmPassword,
   verificationCode
@@ -363,6 +440,11 @@ function validateForm(
 
   if (!isValidEmail(email)) {
     showError("email-error", "Format email tidak valid");
+    isValid = false;
+  }
+
+  if (!isValidPhone(phone)) {
+    showError("phone-error", "Format nomor telepon tidak valid");
     isValid = false;
   }
 
@@ -395,7 +477,9 @@ function validateForm(
 function handleSignUpError(error) {
   const errorMessage = error.message.toLowerCase();
 
-  if (errorMessage.includes("verification code")) {
+  if (errorMessage.includes("phone")) {
+    showError("phone-error", error.message);
+  } else if (errorMessage.includes("verification code")) {
     showError("verification-error", error.message);
   } else if (
     errorMessage.includes("email") ||
@@ -493,6 +577,29 @@ function validateEmail() {
   } else {
     hideError("email-error");
   }
+}
+
+function validatePhone() {
+  const phoneInput = document.getElementById("signup-phone");
+  const phone = phoneInput.value.trim();
+  const errorElement = document.getElementById("phone-error");
+
+  console.log("Validating phone:", phone); // Debug line
+
+  if (!phone) {
+    errorElement.textContent = "Nomor telepon diperlukan";
+    errorElement.style.display = "block";
+    return false;
+  }
+
+  if (!/^[0-9]{10,15}$/.test(phone)) {
+    errorElement.textContent = "Hanya angka, 10-15 digit";
+    errorElement.style.display = "block";
+    return false;
+  }
+
+  errorElement.style.display = "none";
+  return true;
 }
 
 function validateUsername() {

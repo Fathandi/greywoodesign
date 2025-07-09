@@ -20,6 +20,7 @@ const elements = {
   displayEmail: document.getElementById("displayEmail"),
   usernameDisplay: document.getElementById("username"),
   emailDisplay: document.getElementById("email"),
+  phoneDisplay: document.getElementById("phone"),
   fullNameDisplay: document.getElementById("fullName"),
   birthPlaceDisplay: document.getElementById("birthPlace"),
   birthDateDisplay: document.getElementById("birthDate"),
@@ -277,117 +278,116 @@ function updateUIElements() {
   elements.displayEmail.textContent = user.email || "-";
   elements.usernameDisplay.textContent = user.username || "-";
   elements.emailDisplay.textContent = user.email || "-";
+  elements.phoneDisplay.textContent = user.no_telp || "-";
   elements.fullNameDisplay.textContent = user.full_name || "-";
   elements.birthPlaceDisplay.textContent = user.birth_place || "-";
   elements.birthDateDisplay.textContent = formatDateDisplay(user.birth_date);
 }
 
-/**
- * Update profile image dengan fallback sederhana
- */
-async function updateProfileImage(imagePath) {
-  elements.avatarDisplay.innerHTML = '<div style="font-size:12px;">📷</div>';
-  updateDebugInfo(`🔄 Loading image: ${imagePath || "No image path"}`);
-
-  if (!imagePath) {
-    elements.avatarDisplay.innerHTML = "👤";
-    updateDebugInfo("ℹ️ No profile image set");
-    return;
-  }
-
-  // FIX: Gunakan imagePath dari parameter, bukan langsung dari user.profile_image
-  const imageUrl = buildImageUrl(imagePath);
-  console.log("Final image URL:", imageUrl);
-
-  if (imageUrl) {
-    const img = new Image();
-    img.src = imageUrl;
-    img.alt = "Profile";
-    img.style.width = "120px";
-    img.style.height = "120px";
-    img.style.borderRadius = "50%";
-    img.style.objectFit = "cover";
-    img.style.display = "block";
-
-    img.onload = function () {
-      elements.avatarDisplay.innerHTML = ""; // Kosongkan container
-      elements.avatarDisplay.appendChild(img); // Tambahkan gambar
-      updateDebugInfo(`✅ Image loaded: ${imageUrl}`);
-    };
-
-    img.onerror = function () {
-      elements.avatarDisplay.innerHTML = "👤";
-      updateDebugInfo(`❌ Image load failed: ${imageUrl}`);
-    };
-  } else {
-    elements.avatarDisplay.innerHTML = "👤";
-    updateDebugInfo(`❌ Invalid image path: ${imagePath}`);
-  }
-}
+// =======================================================
+// UI Mode Toggle Functions
+// =======================================================
 
 /**
- * Toggle edit mode
+ * Toggle between view and edit modes
+ * @param {boolean} isEditMode - True to enter edit mode, false to return to view mode
  */
-function toggleEditMode(show) {
-  elements.editForm.style.display = show ? "block" : "none";
-  elements.profileView.style.display = show ? "none" : "block";
-
-  if (show && user) {
+function toggleEditMode(isEditMode) {
+  if (isEditMode) {
+    // Switch to edit mode
+    elements.profileView.style.display = "none";
+    elements.editForm.style.display = "block";
+    
+    // Pre-fill form with current user data
     elements.editFullNameInput.value = user.full_name || "";
     elements.editBirthPlaceInput.value = user.birth_place || "";
     elements.editBirthDateInput.value = formatDateForInput(user.birth_date);
-
-    // Reset file input
-    elements.editAvatarInput.value = "";
+    
+    // Reset file preview
     elements.filePreview.style.display = "none";
-    elements.filePreview.src = "";
-    elements.fileLabel.textContent =
-      "Pilih file gambar atau drag & drop di sini";
+    elements.fileLabel.textContent = "Pilih Gambar";
+  } else {
+    // Return to view mode
+    elements.profileView.style.display = "block";
+    elements.editForm.style.display = "none";
   }
 }
 
 /**
- * Cancel edit mode
+ * Cancel edit and return to view mode
  */
 function cancelEdit() {
   toggleEditMode(false);
+  // Reset any changes made in the form
+  updateUIElements();
 }
 
 /**
- * Handle file selection dengan validasi ringan
+ * Update profile image dengan cara yang lebih simpel dan reliable
  */
-function handleFileSelect(e) {
-  const file = e.target.files[0];
-
-  if (file) {
-    // Validasi sederhana
-    if (!file.type.startsWith("image/")) {
-      showAlert("error", "File harus berupa gambar.");
-      e.target.value = "";
-      return;
-    }
-
-    if (file.size > 10 * 1024 * 1024) {
-      // 10MB - lebih longgar
-      showAlert("error", "Ukuran file maksimal 10MB.");
-      e.target.value = "";
-      return;
-    }
-
-    // Preview image
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      elements.filePreview.src = event.target.result;
-      elements.filePreview.style.display = "block";
-      elements.fileLabel.textContent = file.name;
-    };
-    reader.readAsDataURL(file);
-  } else {
-    elements.filePreview.style.display = "none";
-    elements.filePreview.src = "";
-    elements.fileLabel.textContent =
-      "Pilih file gambar atau drag & drop di sini";
+async function updateProfileImage(imagePath) {
+  // Kosongkan dulu avatar display
+  elements.avatarDisplay.innerHTML = '<div class="loading-spinner"></div>';
+  
+  if (!imagePath) {
+    elements.avatarDisplay.innerHTML = '<div class="default-avatar">👤</div>';
+    return;
   }
+
+  // Bangun URL gambar - pastikan menggunakan HTTPS jika situs Anda HTTPS
+  const isHttps = window.location.protocol === 'https:';
+  let imageUrl;
+  
+  // Jika path sudah full URL
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    // Force HTTPS jika situs Anda HTTPS
+    imageUrl = isHttps ? imagePath.replace('http://', 'https://') : imagePath;
+  } 
+  // Jika path relative
+  else {
+    // Pastikan tidak ada double slash
+    const cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+    imageUrl = `${isHttps ? 'https://' : 'http://'}${API_BASE_URL}/${cleanPath}`;
+  }
+
+  console.log('Mencoba load gambar dari:', imageUrl);
+
+  // Buat elemen gambar
+  const img = new Image();
+  img.src = imageUrl;
+  img.alt = "Profile";
+  img.classList.add('profile-avatar');
+  
+  img.onload = function() {
+    elements.avatarDisplay.innerHTML = '';
+    elements.avatarDisplay.appendChild(img);
+    console.log('Gambar berhasil dimuat');
+  };
+  
+  img.onerror = function() {
+    console.error('Gagal memuat gambar:', imageUrl);
+    elements.avatarDisplay.innerHTML = '<div class="default-avatar">👤</div>';
+    
+    // Coba fallback ke HTTP jika HTTPS gagal
+    if (isHttps && imageUrl.startsWith('https://')) {
+      const httpUrl = imageUrl.replace('https://', 'http://');
+      console.log('Mencoba fallback ke:', httpUrl);
+      
+      const fallbackImg = new Image();
+      fallbackImg.src = httpUrl;
+      fallbackImg.alt = "Profile";
+      fallbackImg.classList.add('profile-avatar');
+      
+      fallbackImg.onload = function() {
+        elements.avatarDisplay.innerHTML = '';
+        elements.avatarDisplay.appendChild(fallbackImg);
+      };
+      
+      fallbackImg.onerror = function() {
+        elements.avatarDisplay.innerHTML = '<div class="error-avatar">❌</div>';
+      };
+    }
+  };
 }
 
 /**
